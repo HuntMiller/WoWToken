@@ -21,7 +21,8 @@
                 android:text="FAQ"
                 android:gravity="center_horizontal"
                 android:textSize="30dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textColor="@color/colorBlack"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -34,7 +35,8 @@
                 android:layout_weight="1"
                 android:text="Where do you get this data?"
                 android:textStyle="bold|italic"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <TextView
                 android:id="@+id/textView2"
@@ -42,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="https://wowtoken.info/"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -54,14 +57,16 @@
                 android:layout_height="wrap_content"
                 android:text="What is a WoW Token?"
                 android:textStyle="bold|italic"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="An item in World of Warcraft"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -73,14 +78,16 @@
                 android:layout_height="wrap_content"
                 android:text="What is a WoW Token used for?"
                 android:textStyle="bold|italic"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <TextView
                 android:id="@+id/textView9"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="1. Buy one with money from the in-game Shop, then sell it in the Auction House for gold.\n2. Buy one with gold from the Auction House, then use it to add 30 days of game time to your subscription.\n3. Buy one with gold from the Auction House, then use it to add money to your Blizzard (Battle.net) Balance."
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -92,13 +99,15 @@
                 android:layout_height="wrap_content"
                 android:text="I need game time! How do I buy a WoW Token from the Auction House?"
                 android:textStyle="bold|italic"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"
                 android:text="When you visit the Auction House, you’ll be presented with the current market price for a WoW Token in your game region—there’s no bidding involved, and all Tokens in a game region are priced the same at any given moment. If you decide to purchase one, you’ll receive it in your mailbox, and can then immediately redeem it for game time." />
 
             <Space
@@ -111,14 +120,16 @@
                 android:layout_height="wrap_content"
                 android:text="Do Tokens expire? What happens if I accidentally delete one?"
                 android:textStyle="bold|italic"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <TextView
                 android:id="@+id/textView11"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="No, Tokens do not expire. They also can’t be deleted, so no need to fear accidentally trashing them."
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
 
             <Space
@@ -131,14 +142,16 @@
                 android:layout_height="wrap_content"
                 android:text="How much does a WoW Token cost?"
                 android:textStyle="bold|italic"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="North America: $20 USD or $25 AUD\nEurope: €20 EUR or £15 GBP\nChina: ¥75 CNY\nTaiwan: NT$500 TWD\nSouth Korea: ₩22,000 KRW"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal"
+                android:textColor="@color/colorBlack"/>
 
             <Space
                 android:layout_width="match_parent"
@@ -151,7 +164,8 @@
                 android:text="Disclaimer: All product and company names are trademarks™ or registered® trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them."
                 android:textStyle="bold|italic"
                 android:gravity="center_horizontal"
-                android:textSize="20dp"/>
+                android:textSize="20dp"
+                android:textColor="@color/colorBlack"/>
 
         </LinearLayout>
     </ScrollView>

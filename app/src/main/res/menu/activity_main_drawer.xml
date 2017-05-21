@@ -10,6 +10,10 @@
             android:id="@+id/faq"
             android:icon="@drawable/wowtoken"
             android:title="FAQ" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/wowtoken"
+            android:title="Settings" />
     </group>
 
 </menu>

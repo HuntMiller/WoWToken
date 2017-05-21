@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorHorde">#FF2E2E</color>
+    <color name="colorHorde">#BC323C</color>
+    <color name="colorHordeTrim">#000000</color>
     <color name="colorNeutral">#944AFF</color>
-    <color name="colorAlliance">#3B88FF</color>
+    <color name="colorAlliance">#1955AA</color>
+    <color name="colorAllianceTrim">#FFE01E</color>
 
-    <color name="colorPrimary">#FF2E2E</color>
+    <color name="colorPrimary">#1955AA</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#000000</color>
     <color name="colorBlack">#000000</color>

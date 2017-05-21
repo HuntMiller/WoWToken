@@ -9,8 +9,7 @@
         android:icon="@drawable/wowtokenicon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/wowtokenicon"
-        android:supportsRtl="true"
-        android:theme="@style/AppThemeNoActionBar">
+        android:supportsRtl="true">
 
         <receiver android:name=".widget.MyWidgetProvider">
             <intent-filter>

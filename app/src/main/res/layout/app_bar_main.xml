@@ -27,7 +27,7 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         app:backgroundTint="@color/colorAlliance"
-        app:srcCompat="@drawable/refresh"
+        app:srcCompat="@drawable/alliancerefresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

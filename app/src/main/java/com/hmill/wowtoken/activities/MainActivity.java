@@ -2,7 +2,13 @@ package com.hmill.wowtoken.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -14,15 +20,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.hmill.wowtoken.fragments.BlankFragment;
+import com.hmill.wowtoken.fragments.SettingsFragment;
 import com.hmill.wowtoken.util.Constants;
 import com.hmill.wowtoken.fragments.DataFragment;
 import com.hmill.wowtoken.fragments.FAQFragment;
@@ -43,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     static DrawerLayout drawerLayout;
     NavigationView navigationView;
+    View headerView;
+    FrameLayout banner_container;
     FloatingActionButton fab;
 
     public static String CURRENT_TAG = Constants.TAG_DATA;
@@ -60,28 +73,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Set theme
+        if (getFaction()) {
+            setTheme(R.style.AppThemeAllianceNoActionBar);
+        } else {
+            setTheme(R.style.AppThemeHordeNoActionBar);
+        }
+
         setContentView(R.layout.activity_main);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-
+        init();
 
         setSupportActionBar(toolbar);
         mHandler = new Handler();
         context = getApplicationContext();
         navigationView.setNavigationItemSelectedListener(this);
-
-
         Log.d("tag", "Update Service Started");
         Intent i = new Intent(getApplicationContext(), ScheduledService.class);
         startService(i);
     }
 
+    private void init(){
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        headerView = navigationView.getHeaderView(0);
+        banner_container = (FrameLayout) headerView.findViewById(R.id.banner_container);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        if (getFaction()) {
+            banner_container.setBackgroundResource(R.drawable.alliancebanner);
+
+        } else {
+            banner_container.setBackgroundResource(R.drawable.hordebanner);
+        }
+
         if (navigationIndex == Constants.INDEX_DATA) {
             //Parse URL for token data
             populateDataList();
@@ -107,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.fab:
                 populateDataList();
+                /*
                 //Disable FAB for 1 minute so user can't spam endpoint
                 fab.hide();
                 Timer buttonTimer = new Timer();
@@ -121,8 +151,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         });
                     }
                 }, 60000);
+                */
                 break;
         }
+    }
+
+    private boolean getFaction() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return prefs.getBoolean(Constants.FACTION, true);
     }
 
     private void populateDataList() {
@@ -232,8 +268,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             addTokenData();
 
-                            Snackbar snackbar = Snackbar.make(drawerLayout, "Updated Data!", Snackbar.LENGTH_SHORT);
-                            snackbar.show();
+                            displaySnackbar("Updated data!", Snackbar.LENGTH_SHORT);
 
                         } catch (JSONException e) {
                             Log.e("tag", e.toString());
@@ -244,12 +279,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("tag", "Error parsing Json data: " + error.toString());
-                        Snackbar snackbar = Snackbar.make(drawerLayout, "Something went wrong loading the data! Oh no :(", Snackbar.LENGTH_INDEFINITE);
-                        snackbar.show();
+                        displaySnackbar("Something went wrong loading the data! Oh no :(", Snackbar.LENGTH_INDEFINITE);
                     }
                 });
         VolleySingleton.getInstance(c).addToRequestQueue(jsObjRequest);
 
+    }
+
+    public static void displaySnackbar(String input, int length) {
+        Snackbar snackbar = Snackbar.make(drawerLayout, input, length);
+        snackbar.show();
     }
 
     public static void addTokenData() {
@@ -283,6 +322,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.faq:
                         navigationIndex = Constants.INDEX_FAQ;
                         CURRENT_TAG = Constants.TAG_FAQ;
+                        break;
+                    case R.id.settings:
+                        navigationIndex = Constants.INDEX_SETTINGS;
+                        CURRENT_TAG = Constants.TAG_SETTINGS;
                         break;
                     default:
                         navigationIndex = Constants.INDEX_DATA;
@@ -344,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    private void setToolbarTitle() {
+    public void setToolbarTitle() {
         String title = "error";
         switch (navigationIndex) {
 
@@ -354,9 +397,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case Constants.INDEX_FAQ:
                 title = Constants.FAQ_TOOLBAR_TITLE;
                 break;
+            case Constants.INDEX_SETTINGS:
+                title = Constants.SETTINGS_TOOLBAR_TITLE;
+                break;
         }
-        if (!title.equals("error"))
-            getSupportActionBar().setTitle(title);
+        if (!title.equals("error")) {
+            //If alliance setting is chosen, set toolbar text with alliance color
+            if (getFaction()) {
+                SpannableString a = new SpannableString(title);
+                a.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAllianceTrim)), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                getSupportActionBar().setTitle(a);
+                getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.colorAlliance));
+            }
+            //Else set toolbar text with horde color
+            else {
+                SpannableString h = new SpannableString(title);
+                h.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorHordeTrim)), 0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                getSupportActionBar().setTitle(h);
+                getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.color.colorHorde));
+            }
+
+        }
+
     }
 
     public void loadHomeFragment() {
@@ -412,6 +474,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case Constants.INDEX_FAQ:
                 FAQFragment FAQFragment = new FAQFragment();
                 return FAQFragment;
+            case Constants.INDEX_SETTINGS:
+                SettingsFragment settingsFragment = new SettingsFragment();
+                return settingsFragment;
             default:
                 return new DataFragment();
         }
@@ -419,6 +484,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void toggleFab() {
         Log.d(Constants.TAG, "Toggled FAB");
+        if (getFaction()) {
+            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAlliance)));
+            fab.setImageResource(R.drawable.alliancerefresh);
+        } else {
+            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorHorde)));
+            fab.setImageResource(R.drawable.horderefresh);
+        }
         if (navigationIndex == Constants.INDEX_DATA)
             fab.show();
         else
