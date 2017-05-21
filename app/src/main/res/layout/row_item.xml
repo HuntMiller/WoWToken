@@ -1,0 +1,101 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:maxWidth="250dp"
+            android:text="Region"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black"
+            style="@style/Region"/>
+
+        <TextView
+            android:id="@+id/updated"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/message"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="Updated"
+            android:textColor="@android:color/black"
+            style="@style/Updated"/>
+
+        <TextView
+            android:id="@+id/currentPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/message"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="Current"
+            android:textColor="@android:color/black"
+            style="@style/CurrentPrice"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/lowPrice"
+                style="@style/LowPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:layout_alignParentLeft="true"
+                android:text="Low"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/highPrice"
+                style="@style/HighPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="High"
+                android:textColor="@android:color/black"
+                android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+
+        <SeekBar
+            android:id="@+id/seekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/gradient_two"
+            android:progressBackgroundTint="@color/colorTransparent"
+            android:progressTint="@color/colorTransparent"
+            android:max="100"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"/>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

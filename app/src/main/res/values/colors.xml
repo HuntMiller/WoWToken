@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorHorde">#FF2E2E</color>
+    <color name="colorNeutral">#944AFF</color>
+    <color name="colorAlliance">#3B88FF</color>
+
+    <color name="colorPrimary">#FF2E2E</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#000000</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorTransparent">#00ff0000</color>
 </resources>

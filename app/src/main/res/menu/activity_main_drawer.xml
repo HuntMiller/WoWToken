@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/data"
+            android:icon="@drawable/wowtoken"
+            android:title="Token Data" />
+        <item
+            android:id="@+id/faq"
+            android:icon="@drawable/wowtoken"
+            android:title="FAQ" />
+    </group>
+
+</menu>
