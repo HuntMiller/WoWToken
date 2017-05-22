@@ -2,10 +2,125 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.hmill.wowtoken.fragments.DataFragment">
 
-    <ListView
-        android:id="@+id/data_listView"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/region"
+                style="@style/Region"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:maxWidth="250dp"
+                android:text="Region"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@android:color/black" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/currentPrice"
+                style="@style/CurrentPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Current"
+                android:textColor="@android:color/black" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_weight="1" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/lowPrice"
+                    style="@style/LowPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="Low"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/highPrice"
+                    style="@style/HighPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:text="High"
+                    android:textColor="@android:color/black" />
+            </RelativeLayout>
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_weight="1"
+                android:background="@drawable/seekbar_gradient"
+                android:max="100"
+                android:progressBackgroundTint="@color/colorTransparent"
+                android:progressTint="@color/colorTransparent" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_weight="1" />
+
+            <com.jjoe64.graphview.GraphView
+                android:id="@+id/graph"
+                android:layout_width="match_parent"
+                android:layout_height="200dip"
+                android:layout_weight="1"
+                app:seriesColor="@color/colorBlack"
+                app:seriesType="line" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/updated"
+                style="@style/Updated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Updated"
+                android:textColor="@android:color/black" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

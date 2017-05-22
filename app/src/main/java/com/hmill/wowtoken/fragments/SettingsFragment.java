@@ -61,10 +61,9 @@ public class SettingsFragment extends Fragment {
         hordeRadio = (RadioButton) v.findViewById(R.id.horde_radio);
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        if(loadFaction()){
+        if (loadFaction()) {
             allianceRadio.setChecked(true);
-        }
-        else{
+        } else {
             hordeRadio.setChecked(true);
         }
 
@@ -91,17 +90,17 @@ public class SettingsFragment extends Fragment {
         return v;
     }
 
-    private boolean loadFaction(){
+    private boolean loadFaction() {
         return prefs.getBoolean(Constants.FACTION, false);
     }
 
-    private void updateToolbar(){
-        if(loadFaction()){
+    private void updateToolbar() {
+        if (loadFaction()) {
             SpannableString a = new SpannableString(Constants.SETTINGS_TOOLBAR_TITLE);
             a.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorAllianceTrim)), 0, Constants.SETTINGS_TOOLBAR_TITLE.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         //Else set toolbar text with horde color
-        else{
+        else {
             SpannableString h = new SpannableString(Constants.SETTINGS_TOOLBAR_TITLE);
             h.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorHordeTrim)), 0, Constants.SETTINGS_TOOLBAR_TITLE.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }

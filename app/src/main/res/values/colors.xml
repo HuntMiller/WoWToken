@@ -2,9 +2,13 @@
 <resources>
 
     <color name="colorHorde">#BC323C</color>
+    <color name="colorHordeShadow">#9F323C</color>
     <color name="colorHordeTrim">#000000</color>
+
     <color name="colorNeutral">#944AFF</color>
+
     <color name="colorAlliance">#1955AA</color>
+    <color name="colorAllianceShadow">#15478E</color>
     <color name="colorAllianceTrim">#FFE01E</color>
 
     <color name="colorPrimary">#1955AA</color>
