@@ -35,12 +35,10 @@ public class MyWidgetProvider extends AppWidgetProvider {
     private static TokenInfo KR_Token = new TokenInfo();
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-                         int[] appWidgetIds) {
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
 
         // Get all ids
-        ComponentName thisWidget = new ComponentName(context,
-                MyWidgetProvider.class);
+        ComponentName thisWidget = new ComponentName(context, MyWidgetProvider.class);
         int[] allWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
         for (int widgetId : allWidgetIds) {
             queueUrl(TokenInfo.URL_WITHOUT_HISTORY);
@@ -59,8 +57,7 @@ public class MyWidgetProvider extends AppWidgetProvider {
             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             remoteViews.setOnClickPendingIntent(R.id.update_NA, pendingIntent);
             appWidgetManager.updateAppWidget(widgetId, remoteViews);
         }

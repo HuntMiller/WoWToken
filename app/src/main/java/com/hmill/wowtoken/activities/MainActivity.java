@@ -192,6 +192,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    public void onBackPressed(){
+        if(navigationIndex != Constants.INDEX_DATA){
+            navigationIndex = 0;
+            CURRENT_TAG = Constants.TAG_DATA;
+            loadHomeFragment();
+        }
+        else{
+            finish();
+        }
+    }
+
     private static int loadDefaultSelectedTab() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String defaultRegion = prefs.getString(Constants.DEFAULT_REGION, null);
@@ -616,7 +628,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         b.putString("locale", realm.getLocale());
         b.putString("connectedrealms", realm.getConnectedRealms());
         b.putString("slug", realm.getSlug());
-        Log.e(Constants.TAG, realm.getConnectedRealms());
         i.putExtra("realminfo", b);
         context.startActivity(i);
     }

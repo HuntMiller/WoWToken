@@ -81,7 +81,6 @@ public class RealmsFragment extends Fragment {
         realmArrayList.clear();
         for(Realm r : MainActivity.realmList){
             realmArrayList.add(r);
-            Log.e(Constants.TAG, r.getName());
         }
         realmListAdapter = new RealmListAdapter(realmArrayList, getContext());
         realmListView.setAdapter(realmListAdapter);
