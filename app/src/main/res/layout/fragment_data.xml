@@ -173,6 +173,16 @@
                 android:text="Updated"
                 android:textColor="@android:color/black" />
 
+            <TextView
+                android:id="@+id/apiResult"
+                style="@style/Updated"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="API Result: "
+                android:textColor="@android:color/black" />
+
 
         </LinearLayout>
     </ScrollView>

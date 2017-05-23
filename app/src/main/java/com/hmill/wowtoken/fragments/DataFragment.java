@@ -45,7 +45,7 @@ public class DataFragment extends Fragment {
     private static final boolean canZoomAndScale = true;
     private static final int dataPointsToShow = 250;
 
-    private TextView region, lowPrice, currentPrice, highPrice, updated;
+    private TextView region, lowPrice, currentPrice, highPrice, updated, apiResult;
     private SeekBar seekBar;
     private GraphView graph;
     private Button twentyFourHourButton, threeDayButton, oneWeekButton, allButton;
@@ -81,6 +81,7 @@ public class DataFragment extends Fragment {
         lowPrice = (TextView) v.findViewById(R.id.lowPrice);
         highPrice = (TextView) v.findViewById(R.id.highPrice);
         updated = (TextView) v.findViewById(R.id.updated);
+        apiResult = (TextView) v.findViewById(R.id.apiResult);
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
         graph = (GraphView) v.findViewById(R.id.graph);
         twentyFourHourButton = (Button) v.findViewById(R.id.twenty_four_hour_button);
@@ -202,6 +203,7 @@ public class DataFragment extends Fragment {
         lowPrice.setText(token.getLowPrice());
         highPrice.setText(token.getHighPrice());
         updated.setText(token.getUpdated());
+        apiResult.setText("API Result: " + token.getAPIResult());
         //Calculate % of seekbar
         String currentString = currentPrice.getText().toString();
         String lowString = lowPrice.getText().toString();

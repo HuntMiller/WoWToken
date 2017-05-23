@@ -26,6 +26,7 @@ public class TokenInfo {
 
     public static final String RAW = "raw";
     public static final String FORMATTED = "formatted";
+    public static final String API_RESULT = "result";
     public static final String REGION = "region";
     public static final String TIMESTAMP = "timestamp";
     public static final String UPDATED = "updated";
@@ -33,6 +34,7 @@ public class TokenInfo {
     public static final String CURRENT_PRICE = "buy";
     public static final String HIGH_PRICE = "24max";
 
+    private String APIResult;
     private String region;
     private String timestamp;
     private String updated;
@@ -44,7 +46,8 @@ public class TokenInfo {
     public TokenInfo() {
     }
 
-    public TokenInfo(String region, String timestamp, String updated, String lowPrice, String currentPrice, String highPrice, ArrayList history) {
+    public TokenInfo(String region, String timestamp, String updated, String lowPrice, String currentPrice, String highPrice, ArrayList history, String APIResult) {
+
         this.region = region;
         this.timestamp = timestamp;
         this.updated = updated;
@@ -52,6 +55,15 @@ public class TokenInfo {
         this.currentPrice = currentPrice;
         this.highPrice = highPrice;
         this.history = history;
+        this.APIResult = APIResult;
+    }
+
+    public String getAPIResult(){
+        return APIResult;
+    }
+
+    public void setAPIResult(String APIResult){
+        this.APIResult = APIResult;
     }
 
     public String getRegion() {

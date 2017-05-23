@@ -300,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             NA_Token.setLowPrice(formatNA.get(TokenInfo.LOW_PRICE).toString());
                             NA_Token.setCurrentPrice(formatNA.get(TokenInfo.CURRENT_PRICE).toString());
                             NA_Token.setHighPrice(formatNA.get(TokenInfo.HIGH_PRICE).toString());
+                            NA_Token.setAPIResult(formatNA.get(TokenInfo.API_RESULT).toString());
                             NA_Token.clearHistory();
                             for (int i = 0; i < NAHistory.length(); i++) {
                                 NA_Token.addToHistory(NAHistory.get(i));
@@ -319,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             EU_Token.setLowPrice(formatEU.get(TokenInfo.LOW_PRICE).toString());
                             EU_Token.setCurrentPrice(formatEU.get(TokenInfo.CURRENT_PRICE).toString());
                             EU_Token.setHighPrice(formatEU.get(TokenInfo.HIGH_PRICE).toString());
+                            EU_Token.setAPIResult(formatEU.get(TokenInfo.API_RESULT).toString());
                             EU_Token.clearHistory();
                             for (int i = 0; i < EUHistory.length(); i++) {
                                 EU_Token.addToHistory(EUHistory.get(i));
@@ -338,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             CN_Token.setLowPrice(formatCN.get(TokenInfo.LOW_PRICE).toString());
                             CN_Token.setCurrentPrice(formatCN.get(TokenInfo.CURRENT_PRICE).toString());
                             CN_Token.setHighPrice(formatCN.get(TokenInfo.HIGH_PRICE).toString());
+                            CN_Token.setAPIResult(formatCN.get(TokenInfo.API_RESULT).toString());
                             CN_Token.clearHistory();
                             for (int i = 0; i < CNHistory.length(); i++) {
                                 CN_Token.addToHistory(CNHistory.get(i));
@@ -357,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             TW_Token.setLowPrice(formatTW.get(TokenInfo.LOW_PRICE).toString());
                             TW_Token.setCurrentPrice(formatTW.get(TokenInfo.CURRENT_PRICE).toString());
                             TW_Token.setHighPrice(formatTW.get(TokenInfo.HIGH_PRICE).toString());
+                            TW_Token.setAPIResult(formatTW.get(TokenInfo.API_RESULT).toString());
                             TW_Token.clearHistory();
                             for (int i = 0; i < TWHistory.length(); i++) {
                                 TW_Token.addToHistory(TWHistory.get(i));
@@ -376,6 +380,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             KR_Token.setLowPrice(formatKR.get(TokenInfo.LOW_PRICE).toString());
                             KR_Token.setCurrentPrice(formatKR.get(TokenInfo.CURRENT_PRICE).toString());
                             KR_Token.setHighPrice(formatKR.get(TokenInfo.HIGH_PRICE).toString());
+                            KR_Token.setAPIResult(formatKR.get(TokenInfo.API_RESULT).toString());
                             KR_Token.clearHistory();
                             for (int i = 0; i < KRHistory.length(); i++) {
                                 KR_Token.addToHistory(KRHistory.get(i));
