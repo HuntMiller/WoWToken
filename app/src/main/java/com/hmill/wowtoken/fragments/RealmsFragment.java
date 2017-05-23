@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +20,9 @@ import com.hmill.wowtoken.R;
 import com.hmill.wowtoken.activities.MainActivity;
 import com.hmill.wowtoken.adapters.RealmListAdapter;
 import com.hmill.wowtoken.util.Constants;
+import com.hmill.wowtoken.util.Realm;
+
+import java.util.ArrayList;
 
 public class RealmsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -27,11 +31,12 @@ public class RealmsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    ImageView homeStatus;
-    TextView homeRealm;
-    ListView realmListView;
-    RealmListAdapter adapter;
+    ListView homeRealmListView, realmListView;
+    RealmListAdapter realmListAdapter, homeListAdapter;
+    ArrayList<Realm> homeArrayList = new ArrayList<>();
+    ArrayList<Realm> realmArrayList = new ArrayList<>();
     private SharedPreferences prefs;
+    String homeServer;
 
     public RealmsFragment() {
         // Required empty public constructor
@@ -60,29 +65,55 @@ public class RealmsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_realms, container, false);
+        homeRealmListView = (ListView) v.findViewById(R.id.home_realm_list_view);
         realmListView = (ListView) v.findViewById(R.id.realm_list_view);
-        homeStatus = (ImageView) v.findViewById(R.id.home_realm_status_image_view);
-        homeRealm = (TextView) v.findViewById(R.id.home_realm_name_text_view);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String homeServer = prefs.getString(Constants.HOME_SERVER, null);
-        boolean isOnline = false;
-        for(int i = 0; i < MainActivity.realmList.size(); i++){
-            if(homeServer.equals(MainActivity.realmList.get(i).getName())){
-                isOnline = MainActivity.realmList.get(i).getStatus();
-                Log.e(Constants.TAG, MainActivity.realmList.get(i).getName());
-            }
-        }
-        Log.e(Constants.TAG, String.valueOf(isOnline));
-        if(isOnline)
-            homeStatus.setBackgroundResource(android.R.drawable.btn_star_big_on);
-        else
-            homeStatus.setBackgroundResource(android.R.drawable.btn_star_big_off);
-        homeRealm.setText(homeServer);
-        adapter = new RealmListAdapter(MainActivity.realmList, getContext());
-        realmListView.setAdapter(adapter);
+        homeServer = prefs.getString(Constants.HOME_SERVER, null);
+
+        updateRealms();
 
         return v;
+    }
+
+    public void updateRealms(){
+
+        realmArrayList.clear();
+        for(Realm r : MainActivity.realmList){
+            realmArrayList.add(r);
+            Log.e(Constants.TAG, r.getName());
+        }
+        realmListAdapter = new RealmListAdapter(realmArrayList, getContext());
+        realmListView.setAdapter(realmListAdapter);
+        realmListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Realm realm = realmArrayList.get(position);
+                MainActivity.openRealmPopup(realm);
+            }
+        });
+
+
+        homeArrayList.clear();
+        //Search through realms to find your home realm
+        for(int i = 0; i < realmArrayList.size(); i++){
+            //Add your home server(s) to home list
+            if(homeServer.equals(realmArrayList.get(i).getName())){
+                homeArrayList.add(realmArrayList.get(i));
+            }
+        }
+
+        homeListAdapter = new RealmListAdapter(homeArrayList, getContext());
+        homeRealmListView.setAdapter(homeListAdapter);
+        homeRealmListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Realm realm = homeArrayList.get(position);
+                MainActivity.openRealmPopup(realm);
+            }
+        });
+
+
     }
 
 }

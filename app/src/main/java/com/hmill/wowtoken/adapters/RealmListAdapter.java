@@ -1,6 +1,8 @@
 package com.hmill.wowtoken.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hmill.wowtoken.R;
+import com.hmill.wowtoken.activities.MainActivity;
+import com.hmill.wowtoken.activities.RealmPopup;
+import com.hmill.wowtoken.util.Constants;
 import com.hmill.wowtoken.util.Realm;
 
 import java.util.ArrayList;
@@ -43,7 +48,6 @@ public class RealmListAdapter extends ArrayAdapter<Realm> implements View.OnClic
         Realm realm=(Realm)object;
 
         switch (v.getId()) {
-
         }
     }
 
@@ -70,9 +74,9 @@ public class RealmListAdapter extends ArrayAdapter<Realm> implements View.OnClic
         }
 
         if(realm.getStatus())
-            viewHolder.statusImageView.setBackgroundResource(android.R.drawable.btn_star_big_on);
+            viewHolder.statusImageView.setBackgroundResource(R.drawable.online_icon);
         else
-            viewHolder.statusImageView.setBackgroundResource(android.R.drawable.btn_star_big_off);
+            viewHolder.statusImageView.setBackgroundResource(R.drawable.offline_icon);
         viewHolder.realmTextView.setText(realm.getName());
         // Return the completed view to render on screen
         return convertView;

@@ -21,24 +21,12 @@
             android:textSize="20dp"
             android:textStyle="bold|italic" />
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <ListView
+            android:id="@+id/home_realm_list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/home_realm_status_image_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/home_realm_name_text_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textSize="20dp"
-                android:layout_gravity="center_vertical"/>
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="0px" />
 
         <TextView
             android:id="@+id/textView15"

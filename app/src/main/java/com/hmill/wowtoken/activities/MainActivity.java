@@ -188,22 +188,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (id) {
             case R.id.fab:
                 populateDataList();
-                /*
-                //Disable FAB for 1 minute so user can't spam endpoint
-                fab.hide();
-                Timer buttonTimer = new Timer();
-                buttonTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                fab.show();
-                            }
-                        });
-                    }
-                }, 60000);
-                */
                 break;
         }
     }
@@ -276,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return prefs.getBoolean(Constants.FACTION, true);
     }
 
-    private void populateDataList() {
+    public static void populateDataList() {
         queueUrl(context, TokenInfo.URL_WITH_HISTORY);
         getRealmStatus();
     }
@@ -417,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void getRealmStatus(){
+    public static void getRealmStatus(){
         final String ALL_EN_US_REALMS = "https://us.api.battle.net/wow/realm/status?locale=en_US&apikey=g42yjbzr44um5djjhs2nswdzj2jmkqmx";
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, ALL_EN_US_REALMS, null, new Response.Listener<JSONObject>() {
@@ -425,6 +409,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onResponse(JSONObject response) {
                         try{
+                            realmList.clear();
                             JSONArray realms = (JSONArray) response.get("realms");
                             for(int i = 0; i < realms.length(); i++){
                                 JSONObject o = (JSONObject) realms.get(i);
@@ -443,6 +428,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                         }catch(JSONException e){
+
+                        }
+                        try {
+                            Fragment f = fragmentManager.findFragmentById(R.id.frame);
+                            if (f instanceof RealmsFragment) {
+                                RealmsFragment rf = (RealmsFragment) fragmentManager.findFragmentById(R.id.frame);
+                                rf.updateRealms();
+                            }
+                        } catch (NullPointerException e) {
 
                         }
 
@@ -607,6 +601,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+    }
+
+    public static void openRealmPopup(Realm realm){
+        Intent i = new Intent(context, RealmPopup.class);
+        Bundle b = new Bundle();
+        b.putString("name", realm.getName());
+        b.putString("type", realm.getType());
+        b.putString("battlegroup", realm.getBattlegroup());
+        b.putBoolean("status", realm.getStatus());
+        b.putString("population", realm.getPopulation());
+        b.putBoolean("queue", realm.getQueue());
+        b.putString("timezone", realm.getTimezone());
+        b.putString("locale", realm.getLocale());
+        b.putString("connectedrealms", realm.getConnectedRealms());
+        b.putString("slug", realm.getSlug());
+        Log.e(Constants.TAG, realm.getConnectedRealms());
+        i.putExtra("realminfo", b);
+        context.startActivity(i);
     }
 
     public void loadHomeFragment() {
