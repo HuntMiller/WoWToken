@@ -34,12 +34,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.hmill.wowtoken.fragments.RealmsFragment;
 import com.hmill.wowtoken.fragments.SettingsFragment;
 import com.hmill.wowtoken.util.Constants;
 import com.hmill.wowtoken.fragments.DataFragment;
 import com.hmill.wowtoken.fragments.FAQFragment;
 import com.hmill.wowtoken.R;
 import com.hmill.wowtoken.network.ScheduledService;
+import com.hmill.wowtoken.util.Realm;
 import com.hmill.wowtoken.util.TokenInfo;
 import com.hmill.wowtoken.network.VolleySingleton;
 
@@ -51,28 +53,29 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Toolbar toolbar;
-    static DrawerLayout drawerLayout;
-    static CoordinatorLayout snackbarLayout;
-    NavigationView navigationView;
-    View headerView;
-    FrameLayout banner_container;
-    FloatingActionButton fab;
-    TabHost host;
-
     public static String CURRENT_TAG = Constants.TAG_DATA;
     public static int navigationIndex = Constants.INDEX_DATA;
-    public static int regionIndex = TokenInfo.INDEX_NORTH_AMERICA;
+    public static int regionIndex;
     public static Context context;
     public static ArrayList tokens = new ArrayList();
-
     public static TokenInfo NA_Token = new TokenInfo();
     public static TokenInfo EU_Token = new TokenInfo();
     public static TokenInfo CN_Token = new TokenInfo();
     public static TokenInfo TW_Token = new TokenInfo();
     public static TokenInfo KR_Token = new TokenInfo();
+    public static ArrayList<Realm> realmList = new ArrayList<>();
+
     private static Handler mHandler;
     private static FragmentManager fragmentManager;
+
+    private static DrawerLayout drawerLayout;
+    private static CoordinatorLayout snackbarLayout;
+    private NavigationView navigationView;
+    private View headerView;
+    private FrameLayout banner_container;
+    private FloatingActionButton fab;
+    private TabHost host;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             setTheme(R.style.AppThemeHordeNoActionBar);
         }
+        regionIndex = loadDefaultSelectedTab();
         setContentView(R.layout.activity_main);
         init();
         Log.d("tag", "Update Service Started");
@@ -145,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     regionIndex = TokenInfo.INDEX_KOREA;
 
                 df.updateFragment();
-
             }
         });
         setTabColor(host);
@@ -205,6 +208,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private static int loadDefaultSelectedTab() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String defaultRegion = prefs.getString(Constants.DEFAULT_REGION, null);
+        int ret = 0;
+        if(defaultRegion.equals("North America")){
+            ret = TokenInfo.INDEX_NORTH_AMERICA;
+        }
+        if(defaultRegion.equals("Europe")){
+            ret = TokenInfo.INDEX_EUROPE;
+        }
+        if(defaultRegion.equals("China")){
+            ret = TokenInfo.INDEX_CHINA;
+        }
+        if(defaultRegion.equals("Taiwan")){
+            ret = TokenInfo.INDEX_TAIWAN;
+        }
+        if(defaultRegion.equals("Korea")){
+            ret = TokenInfo.INDEX_KOREA;
+        }
+        return ret;
+    }
+
     private static void setTabColor(TabHost host) {
         //Not selected tabs
         for (int i = 0; i < host.getTabWidget().getChildCount(); i++) {
@@ -253,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void populateDataList() {
         queueUrl(context, TokenInfo.URL_WITH_HISTORY);
+        getRealmStatus();
     }
 
     public static void queueUrl(final Context c, String url) {
@@ -391,6 +417,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void getRealmStatus(){
+        final String ALL_EN_US_REALMS = "https://us.api.battle.net/wow/realm/status?locale=en_US&apikey=g42yjbzr44um5djjhs2nswdzj2jmkqmx";
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest
+                (Request.Method.GET, ALL_EN_US_REALMS, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try{
+                            JSONArray realms = (JSONArray) response.get("realms");
+                            for(int i = 0; i < realms.length(); i++){
+                                JSONObject o = (JSONObject) realms.get(i);
+                                Realm realm = new Realm();
+                                realm.setBattlegroup(o.get(Realm.BATTLEGROUP).toString());
+                                realm.setConnectedRealms(o.get(Realm.CONNECTED_REALMS).toString());
+                                realm.setLocale(o.get(Realm.LOCALE).toString());
+                                realm.setName(o.get(Realm.NAME).toString());
+                                realm.setPopulation(o.get(Realm.POPULATION).toString());
+                                realm.setQueue(Boolean.parseBoolean(o.get(Realm.QUEUE).toString()));
+                                realm.setSlug(o.get(Realm.SLUG).toString());
+                                realm.setTimezone(o.get(Realm.TIMEZONE).toString());
+                                realm.setStatus(Boolean.parseBoolean(o.get(Realm.STATUS).toString()));
+                                realm.setType(o.get(Realm.TYPE).toString());
+                                realmList.add(realm);
+                            }
+
+                        }catch(JSONException e){
+
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e(Constants.TAG, error.toString());
+
+                    }
+                });
+        VolleySingleton.getInstance(context).addToRequestQueue(jsObjRequest);
+    }
+
     public static void displaySnackbar(String input, int length) {
         Snackbar snackbar = Snackbar.make(snackbarLayout, input, length);
         View snackbarView = snackbar.getView();
@@ -432,6 +499,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.data:
                         navigationIndex = Constants.INDEX_DATA;
                         CURRENT_TAG = Constants.TAG_DATA;
+                        break;
+                    case R.id.realms:
+                        navigationIndex = Constants.INDEX_REALMS;
+                        CURRENT_TAG = Constants.TAG_REALMS;
                         break;
                     case R.id.faq:
                         navigationIndex = Constants.INDEX_FAQ;
@@ -507,6 +578,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case Constants.INDEX_DATA:
                 title = Constants.DATA_TOOLBAR_TITLE;
+                break;
+            case Constants.INDEX_REALMS:
+                title = Constants.REALMS_TOOLBAR_TITLE;
                 break;
             case Constants.INDEX_FAQ:
                 title = Constants.FAQ_TOOLBAR_TITLE;
@@ -585,6 +659,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case Constants.INDEX_DATA:
                 DataFragment dataFragment = new DataFragment();
                 return dataFragment;
+            case Constants.INDEX_REALMS:
+                RealmsFragment realmsFragment = new RealmsFragment();
+                return realmsFragment;
             case Constants.INDEX_FAQ:
                 FAQFragment FAQFragment = new FAQFragment();
                 return FAQFragment;
@@ -607,14 +684,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fab.setImageResource(R.drawable.horderefresh);
             host.setBackgroundColor(getResources().getColor(R.color.colorHordeShadow));
         }
-        if (navigationIndex == Constants.INDEX_DATA) {
+        //FAB
+        if (navigationIndex == Constants.INDEX_DATA || navigationIndex == Constants.INDEX_REALMS) {
             fab.show();
-            host.setVisibility(View.VISIBLE);
         } else {
             fab.hide();
+        }
+        //Tabs
+        if (navigationIndex == Constants.INDEX_DATA) {
+            host.setVisibility(View.VISIBLE);
+        } else {
             host.setVisibility(View.GONE);
         }
-
     }
 
 }

@@ -7,6 +7,10 @@
             android:icon="@drawable/wowtoken"
             android:title="Token Data" />
         <item
+            android:id="@+id/realms"
+            android:icon="@drawable/wowtoken"
+            android:title="Realms" />
+        <item
             android:id="@+id/faq"
             android:icon="@drawable/wowtoken"
             android:title="FAQ" />

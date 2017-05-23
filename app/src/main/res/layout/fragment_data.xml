@@ -30,7 +30,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="@dimen/data_fragment_space_height"
                 android:layout_weight="1" />
 
             <TextView
@@ -45,7 +45,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="5dp"
+                android:layout_height="@dimen/data_fragment_space_height_small"
                 android:layout_weight="1" />
 
             <RelativeLayout
@@ -90,7 +90,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="@dimen/data_fragment_space_height"
                 android:layout_weight="1" />
 
             <com.jjoe64.graphview.GraphView
@@ -103,7 +103,64 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="15dp"
+                android:layout_height="@dimen/data_fragment_space_height_small"
+                android:layout_weight="1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="left">
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Filter: "
+                    android:textColor="@color/colorBlack"/>
+
+                <Button
+                    android:id="@+id/twenty_four_hour_button"
+                    android:layout_width="@dimen/filter_button_width"
+                    android:layout_height="@dimen/filter_button_height"
+                    android:text="24h"
+                    android:textColor="@color/colorBlack"
+                    android:background="@null"
+                    android:padding="@dimen/filter_button_padding"
+                    android:shadowColor="@color/colorAllianceTrim"/>
+
+                <Button
+                    android:id="@+id/three_day_button"
+                    android:layout_width="@dimen/filter_button_width"
+                    android:layout_height="@dimen/filter_button_height"
+                    android:text="3d"
+                    android:textColor="@color/colorBlack"
+                    android:background="@null"
+                    android:padding="@dimen/filter_button_padding"/>
+
+                <Button
+                    android:id="@+id/one_week_button"
+                    android:layout_width="@dimen/filter_button_width"
+                    android:layout_height="@dimen/filter_button_height"
+                    android:text="1w"
+                    android:textColor="@color/colorBlack"
+                    android:background="@null"
+                    android:padding="@dimen/filter_button_padding"/>
+
+                <Button
+                    android:id="@+id/all_button"
+                    android:layout_width="@dimen/filter_button_width"
+                    android:layout_height="@dimen/filter_button_height"
+                    android:text="All"
+                    android:textColor="@color/colorBlack"
+                    android:background="@null"
+                    android:padding="@dimen/filter_button_padding"/>
+
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/data_fragment_space_height"
                 android:layout_weight="1" />
 
             <TextView
@@ -116,10 +173,6 @@
                 android:text="Updated"
                 android:textColor="@android:color/black" />
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:layout_weight="1" />
 
         </LinearLayout>
     </ScrollView>

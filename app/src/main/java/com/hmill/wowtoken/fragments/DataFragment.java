@@ -1,12 +1,17 @@
 package com.hmill.wowtoken.fragments;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,9 +48,11 @@ public class DataFragment extends Fragment {
     private TextView region, lowPrice, currentPrice, highPrice, updated;
     private SeekBar seekBar;
     private GraphView graph;
+    private Button twentyFourHourButton, threeDayButton, oneWeekButton, allButton;
 
     private TokenInfo token;
     private String regionTitle;
+    private ArrayList history;
 
 
     public DataFragment() {
@@ -76,10 +83,53 @@ public class DataFragment extends Fragment {
         updated = (TextView) v.findViewById(R.id.updated);
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
         graph = (GraphView) v.findViewById(R.id.graph);
+        twentyFourHourButton = (Button) v.findViewById(R.id.twenty_four_hour_button);
+        threeDayButton = (Button) v.findViewById(R.id.three_day_button);
+        oneWeekButton = (Button) v.findViewById(R.id.one_week_button);
+        allButton = (Button) v.findViewById(R.id.all_button);
 
+        setupListeners();
         updateFragment();
 
         return v;
+    }
+
+    private void setupListeners() {
+        twentyFourHourButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(150);
+                graph.getViewport().scrollToEnd();
+            }
+        });
+
+        threeDayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(450);
+                graph.getViewport().scrollToEnd();
+            }
+        });
+
+        oneWeekButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(1050);
+                graph.getViewport().scrollToEnd();
+            }
+        });
+
+        allButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                graph.getViewport().setMinX(0);
+                graph.getViewport().setMaxX(history.size());
+                graph.getViewport().scrollToEnd();
+            }
+        });
     }
 
     private int sanitize(String string) {
@@ -167,9 +217,31 @@ public class DataFragment extends Fragment {
             Log.e(Constants.TAG, e.toString());
         }
         int seekPerc = calculateSeekbarPercentage(currentInt, lowInt, highInt);
-        seekBar.setProgress(seekPerc);
 
-        ArrayList history = new ArrayList();
+        ValueAnimator anim = ValueAnimator.ofInt(seekBar.getProgress(), seekPerc);
+        if(Math.abs(seekPerc-seekBar.getProgress()) > 25)
+            anim.setDuration(500);
+        else
+            anim.setDuration(250);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int animProgress = (Integer) animation.getAnimatedValue();
+                seekBar.setProgress(animProgress);
+            }
+        });
+        anim.start();
+
+        //seekBar.setProgress(seekPerc);
+        seekBar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+
+        history = new ArrayList();
         history.clear();
         history = token.getHistory();
         LineGraphSeries series = createSeriesFromHistory(history);
