@@ -43,7 +43,11 @@ import java.util.TimeZone;
 public class DataFragment extends Fragment {
 
     private static final boolean canZoomAndScale = true;
-    private static final int dataPointsToShow = 250;
+    //# data points shown
+    private static final int minX = 0;
+    private static final int oneDayMaxX = 150;
+    private static final int threeDayMaxX = 450;
+    private static final int oneWeekMaxX = 1050;
 
     private TextView region, lowPrice, currentPrice, highPrice, updated, apiResult;
     private SeekBar seekBar;
@@ -99,8 +103,8 @@ public class DataFragment extends Fragment {
         twentyFourHourButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(150);
+                graph.getViewport().setMinX(minX);
+                graph.getViewport().setMaxX(oneDayMaxX);
                 graph.getViewport().scrollToEnd();
             }
         });
@@ -108,8 +112,8 @@ public class DataFragment extends Fragment {
         threeDayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(450);
+                graph.getViewport().setMinX(minX);
+                graph.getViewport().setMaxX(threeDayMaxX);
                 graph.getViewport().scrollToEnd();
             }
         });
@@ -117,8 +121,8 @@ public class DataFragment extends Fragment {
         oneWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(1050);
+                graph.getViewport().setMinX(minX);
+                graph.getViewport().setMaxX(oneWeekMaxX);
                 graph.getViewport().scrollToEnd();
             }
         });
@@ -126,7 +130,7 @@ public class DataFragment extends Fragment {
         allButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(0);
+                graph.getViewport().setMinX(minX);
                 graph.getViewport().setMaxX(history.size());
                 graph.getViewport().scrollToEnd();
             }
@@ -254,8 +258,8 @@ public class DataFragment extends Fragment {
 
         //Set zoom to show last X amount of datapoints
         graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(0);
-        graph.getViewport().setMaxX(dataPointsToShow);
+        graph.getViewport().setMinX(minX);
+        graph.getViewport().setMaxX(oneDayMaxX);
         graph.getViewport().scrollToEnd();
 
 
