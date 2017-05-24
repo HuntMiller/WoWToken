@@ -57,17 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static int navigationIndex = Constants.INDEX_DATA;
     public static int regionIndex;
     public static Context context;
-    public static ArrayList tokens = new ArrayList();
-    public static TokenInfo NA_Token = new TokenInfo();
-    public static TokenInfo EU_Token = new TokenInfo();
-    public static TokenInfo CN_Token = new TokenInfo();
-    public static TokenInfo TW_Token = new TokenInfo();
-    public static TokenInfo KR_Token = new TokenInfo();
-    public static ArrayList<Realm> realmList = new ArrayList<>();
 
     private static Handler mHandler;
     private static FragmentManager fragmentManager;
-
     private static DrawerLayout drawerLayout;
     private static CoordinatorLayout snackbarLayout;
     private NavigationView navigationView;
@@ -80,19 +72,83 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Set theme
         context = this;
+        //Set theme (has to be done before content view is set)
         if (getFaction()) {
             setTheme(R.style.AppThemeAllianceNoActionBar);
         } else {
             setTheme(R.style.AppThemeHordeNoActionBar);
         }
-        regionIndex = loadDefaultSelectedTab();
         setContentView(R.layout.activity_main);
         init();
         Log.d("tag", "Update Service Started");
         Intent i = new Intent(getApplicationContext(), ScheduledService.class);
         startService(i);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setBanner(getFaction());
+        if (navigationIndex == Constants.INDEX_DATA) {
+            //Parse URL for token data
+            populateFragment();
+        }
+        //NavigationView setup
+        setUpNavigationView();
+        //Load fragment
+        loadHomeFragment();
+        //Toggle fab for screen rotations
+        toggleFab();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        //Stop Update Service
+        Intent i = new Intent(context, ScheduledService.class);
+        stopService(i);
+    }
+
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.fab:
+                populateFragment();
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (navigationIndex != Constants.INDEX_DATA) {
+            navigationIndex = 0;
+            CURRENT_TAG = Constants.TAG_DATA;
+            loadHomeFragment();
+        } else {
+            finish();
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.data) {
+
+        } else if (id == R.id.realms) {
+
+        } else if (id == R.id.faq) {
+
+        } else if (id == R.id.settings) {
+
+        }
+        setUpNavigationView();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     private void init() {
@@ -104,8 +160,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         banner_container = (FrameLayout) headerView.findViewById(R.id.banner_container);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         host = (TabHost) findViewById(R.id.tabhost);
-        host.setup();
 
+        fragmentManager = getSupportFragmentManager();
+        setSupportActionBar(toolbar);
+        mHandler = new Handler();
+        navigationView.setNavigationItemSelectedListener(this);
+        regionIndex = loadDefaultSelectedTab();
+
+        host.setup();
         TabHost.TabSpec spec = host.newTabSpec(TokenInfo.NORTH_AMERICA);
         spec.setContent(R.id.tab1);
         spec.setIndicator(TokenInfo.NORTH_AMERICA);
@@ -152,75 +214,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         setTabColor(host);
-
-        fragmentManager = getSupportFragmentManager();
-        setSupportActionBar(toolbar);
-        mHandler = new Handler();
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setBanner(getFaction());
-        if (navigationIndex == Constants.INDEX_DATA) {
-            //Parse URL for token data
-            populateDataList();
-        }
-        //NavigationView setup
-        setUpNavigationView();
-        //Load fragment
-        loadHomeFragment();
-        //Toggle fab for screen rotations
-        toggleFab();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        //Stop Update Service
-        Intent i = new Intent(context, ScheduledService.class);
-        stopService(i);
-    }
-
-    public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.fab:
-                populateDataList();
-                break;
-        }
-    }
-
-    @Override
-    public void onBackPressed(){
-        if(navigationIndex != Constants.INDEX_DATA){
-            navigationIndex = 0;
-            CURRENT_TAG = Constants.TAG_DATA;
-            loadHomeFragment();
-        }
-        else{
-            finish();
-        }
     }
 
     private static int loadDefaultSelectedTab() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String defaultRegion = prefs.getString(Constants.DEFAULT_REGION, null);
         int ret = 0;
-        if(defaultRegion.equals("North America")){
+        if (defaultRegion.equals("North America")) {
             ret = TokenInfo.INDEX_NORTH_AMERICA;
         }
-        if(defaultRegion.equals("Europe")){
+        if (defaultRegion.equals("Europe")) {
             ret = TokenInfo.INDEX_EUROPE;
         }
-        if(defaultRegion.equals("China")){
+        if (defaultRegion.equals("China")) {
             ret = TokenInfo.INDEX_CHINA;
         }
-        if(defaultRegion.equals("Taiwan")){
+        if (defaultRegion.equals("Taiwan")) {
             ret = TokenInfo.INDEX_TAIWAN;
         }
-        if(defaultRegion.equals("Korea")){
+        if (defaultRegion.equals("Korea")) {
             ret = TokenInfo.INDEX_KOREA;
         }
         return ret;
@@ -272,201 +284,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return prefs.getBoolean(Constants.FACTION, true);
     }
 
-    public static void populateDataList() {
-        queueUrl(context, TokenInfo.URL_WITH_HISTORY);
-        getRealmStatus();
-    }
+    /*
+    Populate whatever fragment with whatever data it needs
+     */
+    public static void populateFragment() {
+        Fragment frag = fragmentManager.findFragmentById(R.id.frame);
+        if (frag instanceof DataFragment) {
+            DataFragment dataFragment = (DataFragment) frag;
+            dataFragment.queueUrl(context, TokenInfo.URL_WITH_HISTORY);
+        }
+        if (frag instanceof RealmsFragment) {
+            RealmsFragment realmsFragment = (RealmsFragment) frag;
+            realmsFragment.getRealmStatus();
+        }
 
-    public static void queueUrl(final Context c, String url) {
-        Log.d(Constants.TAG, "called queueUrl()");
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        try {
-                            //Update
-                            JSONObject update = (JSONObject) response.get("update");
-                            JSONObject history = (JSONObject) response.get("history");
-                            /*
-                            NA
-                             */
-                            JSONObject Na = (JSONObject) update.get(TokenInfo.NORTH_AMERICA);
-                            JSONObject formatNA = (JSONObject) Na.get(TokenInfo.FORMATTED);
-                            JSONArray NAHistory = (JSONArray) history.get(TokenInfo.NORTH_AMERICA);
-                            NA_Token.setRegion(formatNA.get(TokenInfo.REGION).toString());
-                            NA_Token.setUpdated(formatNA.get(TokenInfo.UPDATED).toString());
-                            NA_Token.setLowPrice(formatNA.get(TokenInfo.LOW_PRICE).toString());
-                            NA_Token.setCurrentPrice(formatNA.get(TokenInfo.CURRENT_PRICE).toString());
-                            NA_Token.setHighPrice(formatNA.get(TokenInfo.HIGH_PRICE).toString());
-                            NA_Token.setAPIResult(formatNA.get(TokenInfo.API_RESULT).toString());
-                            NA_Token.clearHistory();
-                            for (int i = 0; i < NAHistory.length(); i++) {
-                                NA_Token.addToHistory(NAHistory.get(i));
-                            }
-                            /*
-                            NA
-                             */
-
-                            /*
-                            EU
-                             */
-                            JSONObject Eu = (JSONObject) update.get(TokenInfo.EUROPEAN);
-                            JSONObject formatEU = (JSONObject) Eu.get(TokenInfo.FORMATTED);
-                            JSONArray EUHistory = (JSONArray) history.get(TokenInfo.EUROPEAN);
-                            EU_Token.setRegion(formatEU.get(TokenInfo.REGION).toString());
-                            EU_Token.setUpdated(formatEU.get(TokenInfo.UPDATED).toString());
-                            EU_Token.setLowPrice(formatEU.get(TokenInfo.LOW_PRICE).toString());
-                            EU_Token.setCurrentPrice(formatEU.get(TokenInfo.CURRENT_PRICE).toString());
-                            EU_Token.setHighPrice(formatEU.get(TokenInfo.HIGH_PRICE).toString());
-                            EU_Token.setAPIResult(formatEU.get(TokenInfo.API_RESULT).toString());
-                            EU_Token.clearHistory();
-                            for (int i = 0; i < EUHistory.length(); i++) {
-                                EU_Token.addToHistory(EUHistory.get(i));
-                            }
-                            /*
-                            EU
-                             */
-
-                            /*
-                            CN
-                             */
-                            JSONObject Cn = (JSONObject) update.get(TokenInfo.CHINESE);
-                            JSONObject formatCN = (JSONObject) Cn.get(TokenInfo.FORMATTED);
-                            JSONArray CNHistory = (JSONArray) history.get(TokenInfo.CHINESE);
-                            CN_Token.setRegion(formatCN.get(TokenInfo.REGION).toString());
-                            CN_Token.setUpdated(formatCN.get(TokenInfo.UPDATED).toString());
-                            CN_Token.setLowPrice(formatCN.get(TokenInfo.LOW_PRICE).toString());
-                            CN_Token.setCurrentPrice(formatCN.get(TokenInfo.CURRENT_PRICE).toString());
-                            CN_Token.setHighPrice(formatCN.get(TokenInfo.HIGH_PRICE).toString());
-                            CN_Token.setAPIResult(formatCN.get(TokenInfo.API_RESULT).toString());
-                            CN_Token.clearHistory();
-                            for (int i = 0; i < CNHistory.length(); i++) {
-                                CN_Token.addToHistory(CNHistory.get(i));
-                            }
-                            /*
-                            CN
-                             */
-
-                            /*
-                            TW
-                             */
-                            JSONObject Tw = (JSONObject) update.get(TokenInfo.TAIWAN);
-                            JSONObject formatTW = (JSONObject) Tw.get(TokenInfo.FORMATTED);
-                            JSONArray TWHistory = (JSONArray) history.get(TokenInfo.TAIWAN);
-                            TW_Token.setRegion(formatTW.get(TokenInfo.REGION).toString());
-                            TW_Token.setUpdated(formatTW.get(TokenInfo.UPDATED).toString());
-                            TW_Token.setLowPrice(formatTW.get(TokenInfo.LOW_PRICE).toString());
-                            TW_Token.setCurrentPrice(formatTW.get(TokenInfo.CURRENT_PRICE).toString());
-                            TW_Token.setHighPrice(formatTW.get(TokenInfo.HIGH_PRICE).toString());
-                            TW_Token.setAPIResult(formatTW.get(TokenInfo.API_RESULT).toString());
-                            TW_Token.clearHistory();
-                            for (int i = 0; i < TWHistory.length(); i++) {
-                                TW_Token.addToHistory(TWHistory.get(i));
-                            }
-                            /*
-                            TW
-                             */
-
-                            /*
-                            KR
-                             */
-                            JSONObject Kr = (JSONObject) update.get(TokenInfo.KOREAN);
-                            JSONObject formatKR = (JSONObject) Kr.get(TokenInfo.FORMATTED);
-                            JSONArray KRHistory = (JSONArray) history.get(TokenInfo.KOREAN);
-                            KR_Token.setRegion(formatKR.get(TokenInfo.REGION).toString());
-                            KR_Token.setUpdated(formatKR.get(TokenInfo.UPDATED).toString());
-                            KR_Token.setLowPrice(formatKR.get(TokenInfo.LOW_PRICE).toString());
-                            KR_Token.setCurrentPrice(formatKR.get(TokenInfo.CURRENT_PRICE).toString());
-                            KR_Token.setHighPrice(formatKR.get(TokenInfo.HIGH_PRICE).toString());
-                            KR_Token.setAPIResult(formatKR.get(TokenInfo.API_RESULT).toString());
-                            KR_Token.clearHistory();
-                            for (int i = 0; i < KRHistory.length(); i++) {
-                                KR_Token.addToHistory(KRHistory.get(i));
-                            }
-                            /*
-                            KR
-                             */
-
-                            Log.d(Constants.TAG, "Parsed Json data into tokens");
-                            addTokenData();
-                            try {
-                                Fragment f = fragmentManager.findFragmentById(R.id.frame);
-                                if (f instanceof DataFragment) {
-                                    DataFragment df = (DataFragment) fragmentManager.findFragmentById(R.id.frame);
-                                    df.updateFragment();
-                                }
-                            } catch (NullPointerException e) {
-
-                            }
-
-                            displaySnackbar("Updated data!", Snackbar.LENGTH_SHORT);
-                        } catch (JSONException e) {
-                            Log.e("tag", e.toString());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("tag", "Error parsing Json data: " + error.toString());
-                        displaySnackbar("Something went wrong loading the data! Oh no :(", Snackbar.LENGTH_INDEFINITE);
-                    }
-                });
-        VolleySingleton.getInstance(c).addToRequestQueue(jsObjRequest);
-
-    }
-
-    public static void getRealmStatus(){
-        final String ALL_EN_US_REALMS = "https://us.api.battle.net/wow/realm/status?locale=en_US&apikey=g42yjbzr44um5djjhs2nswdzj2jmkqmx";
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                (Request.Method.GET, ALL_EN_US_REALMS, null, new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try{
-                            realmList.clear();
-                            JSONArray realms = (JSONArray) response.get("realms");
-                            for(int i = 0; i < realms.length(); i++){
-                                JSONObject o = (JSONObject) realms.get(i);
-                                Realm realm = new Realm();
-                                realm.setBattlegroup(o.get(Realm.BATTLEGROUP).toString());
-                                realm.setConnectedRealms(o.get(Realm.CONNECTED_REALMS).toString());
-                                realm.setLocale(o.get(Realm.LOCALE).toString());
-                                realm.setName(o.get(Realm.NAME).toString());
-                                realm.setPopulation(o.get(Realm.POPULATION).toString());
-                                realm.setQueue(Boolean.parseBoolean(o.get(Realm.QUEUE).toString()));
-                                realm.setSlug(o.get(Realm.SLUG).toString());
-                                realm.setTimezone(o.get(Realm.TIMEZONE).toString());
-                                realm.setStatus(Boolean.parseBoolean(o.get(Realm.STATUS).toString()));
-                                realm.setType(o.get(Realm.TYPE).toString());
-                                realmList.add(realm);
-                            }
-
-                        }catch(JSONException e){
-
-                        }
-                        try {
-                            Fragment f = fragmentManager.findFragmentById(R.id.frame);
-                            if (f instanceof RealmsFragment) {
-                                RealmsFragment rf = (RealmsFragment) fragmentManager.findFragmentById(R.id.frame);
-                                rf.updateRealms();
-                            }
-                        } catch (NullPointerException e) {
-
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e(Constants.TAG, error.toString());
-
-                    }
-                });
-        VolleySingleton.getInstance(context).addToRequestQueue(jsObjRequest);
     }
 
     public static void displaySnackbar(String input, int length) {
@@ -481,16 +312,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         snackbar.show();
-    }
-
-    public static void addTokenData() {
-        tokens.clear();
-        tokens.add(NA_Token);
-        tokens.add(EU_Token);
-        tokens.add(CN_Token);
-        tokens.add(TW_Token);
-        tokens.add(KR_Token);
-        Log.d(Constants.TAG, "Added regional tokens to tokens (ArrayList)");
     }
 
     private void selectNavMenu() {
@@ -566,23 +387,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.data) {
-
-        } else if (id == R.id.faq) {
-
-        }
-        setUpNavigationView();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
     public void setToolbarTitle() {
         String title = "error";
         switch (navigationIndex) {
@@ -618,23 +422,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
-    }
-
-    public static void openRealmPopup(Realm realm){
-        Intent i = new Intent(context, RealmPopup.class);
-        Bundle b = new Bundle();
-        b.putString("name", realm.getName());
-        b.putString("type", realm.getType());
-        b.putString("battlegroup", realm.getBattlegroup());
-        b.putBoolean("status", realm.getStatus());
-        b.putString("population", realm.getPopulation());
-        b.putBoolean("queue", realm.getQueue());
-        b.putString("timezone", realm.getTimezone());
-        b.putString("locale", realm.getLocale());
-        b.putString("connectedrealms", realm.getConnectedRealms());
-        b.putString("slug", realm.getSlug());
-        i.putExtra("realminfo", b);
-        context.startActivity(i);
     }
 
     public void loadHomeFragment() {

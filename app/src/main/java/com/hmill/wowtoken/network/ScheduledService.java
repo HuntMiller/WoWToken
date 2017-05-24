@@ -33,8 +33,7 @@ public class ScheduledService extends Service {
             @Override
             public void run() {
                 try {
-                    MainActivity.populateDataList();
-                    //MainActivity.queueUrl(MainActivity.context, TokenInfo.URL_WITH_HISTORY);
+                    MainActivity.populateFragment();
                 } catch (NullPointerException npe) {
                     Log.e("tag", npe.toString());
                 }

@@ -24,7 +24,6 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:maxWidth="250dp"
-                android:text="Region"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@android:color/black" />
 
@@ -40,7 +39,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="Current"
                 android:textColor="@android:color/black" />
 
             <Space
@@ -61,7 +59,6 @@
                     android:layout_alignParentLeft="true"
                     android:layout_weight="1"
                     android:gravity="left"
-                    android:text="Low"
                     android:textColor="@android:color/black" />
 
                 <TextView
@@ -72,7 +69,6 @@
                     android:layout_alignParentRight="true"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="High"
                     android:textColor="@android:color/black" />
             </RelativeLayout>
 
@@ -170,7 +166,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="Updated"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -180,7 +175,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
-                android:text="API Result: "
                 android:textColor="@android:color/black" />
 
 
