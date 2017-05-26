@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static int regionIndex;
     public static Context context;
 
+    private static Animation rotateAnimation;
     private static Handler mHandler;
     private static FragmentManager fragmentManager;
     private static DrawerLayout drawerLayout;
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private View headerView;
     private FrameLayout banner_container;
-    private FloatingActionButton fab;
+    private static FloatingActionButton fab;
     private TabHost host;
     private Toolbar toolbar;
 
@@ -81,9 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         setContentView(R.layout.activity_main);
         init();
-        Log.d("tag", "Update Service Started");
-        Intent i = new Intent(getApplicationContext(), ScheduledService.class);
-        startService(i);
+
     }
 
     @Override
@@ -100,6 +101,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loadHomeFragment();
         //Toggle fab for screen rotations
         toggleFab();
+        Log.d("tag", "Update Service Started");
+        Intent i = new Intent(getApplicationContext(), ScheduledService.class);
+        startService(i);
     }
 
     @Override
@@ -114,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = v.getId();
         switch (id) {
             case R.id.fab:
+                rotateFAB(true);
                 populateFragment();
                 break;
         }
@@ -166,26 +171,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mHandler = new Handler();
         navigationView.setNavigationItemSelectedListener(this);
         regionIndex = loadDefaultSelectedTab();
+        rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate_ccw);
 
         host.setup();
         TabHost.TabSpec spec = host.newTabSpec(TokenInfo.NORTH_AMERICA);
-        spec.setContent(R.id.tab1);
+        spec.setContent(R.id.NA_Tab);
         spec.setIndicator(TokenInfo.NORTH_AMERICA);
         host.addTab(spec);
         spec = host.newTabSpec(TokenInfo.EUROPEAN);
-        spec.setContent(R.id.tab2);
+        spec.setContent(R.id.EU_Tab);
         spec.setIndicator(TokenInfo.EUROPEAN);
         host.addTab(spec);
         spec = host.newTabSpec(TokenInfo.CHINESE);
-        spec.setContent(R.id.tab3);
+        spec.setContent(R.id.CN_Tab);
         spec.setIndicator(TokenInfo.CHINESE);
         host.addTab(spec);
         spec = host.newTabSpec(TokenInfo.TAIWAN);
-        spec.setContent(R.id.tab4);
+        spec.setContent(R.id.TW_Tab);
         spec.setIndicator(TokenInfo.TAIWAN);
         host.addTab(spec);
         spec = host.newTabSpec(TokenInfo.KOREAN);
-        spec.setContent(R.id.tab5);
+        spec.setContent(R.id.KR_Tab);
         spec.setIndicator(TokenInfo.KOREAN);
         host.addTab(spec);
         host.setCurrentTab(regionIndex);
@@ -214,6 +220,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
         setTabColor(host);
+    }
+
+    public static void rotateFAB(boolean startRotate){
+        if(startRotate){
+            rotateAnimation.setRepeatCount(Animation.INFINITE);
+            fab.startAnimation(rotateAnimation);
+        }
+        else{
+            rotateAnimation.setRepeatCount(0);
+        }
     }
 
     private static int loadDefaultSelectedTab() {

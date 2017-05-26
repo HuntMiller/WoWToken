@@ -306,6 +306,7 @@ public class DataFragment extends Fragment {
                     public void onResponse(JSONObject response) {
 
                         try {
+                            MainActivity.rotateFAB(true);
                             //Update
                             JSONObject update = (JSONObject) response.get("update");
                             JSONObject history = (JSONObject) response.get("history");
@@ -412,7 +413,7 @@ public class DataFragment extends Fragment {
                             Log.d(Constants.TAG, "Parsed Json data into tokens");
                             addTokenData();
                             updateFragment();
-
+                            MainActivity.rotateFAB(false);
                             MainActivity.displaySnackbar("Updated data!", Snackbar.LENGTH_SHORT);
                         } catch (JSONException e) {
                             Log.e("tag", e.toString());

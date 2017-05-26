@@ -87,6 +87,7 @@ public class RealmsFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+                            MainActivity.rotateFAB(true);
                             loadedRealmList.clear();
                             JSONArray realms = (JSONArray) response.get("realms");
                             for (int i = 0; i < realms.length(); i++) {
@@ -109,6 +110,7 @@ public class RealmsFragment extends Fragment {
 
                         }
                         updateRealms();
+                        MainActivity.rotateFAB(false);
                         MainActivity.displaySnackbar("Updated data!", Snackbar.LENGTH_SHORT);
                     }
                 }, new Response.ErrorListener() {
