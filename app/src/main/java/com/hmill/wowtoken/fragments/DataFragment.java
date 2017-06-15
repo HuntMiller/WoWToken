@@ -263,7 +263,6 @@ public class DataFragment extends Fragment {
             }
         });
 
-
         history = new ArrayList();
         history.clear();
         history = token.getHistory();
@@ -272,6 +271,8 @@ public class DataFragment extends Fragment {
         graph.addSeries(series);
 
         graph.getViewport().setScalableY(canZoomAndScale);
+
+
 
         //Set zoom to show last X amount of datapoints
         graph.getViewport().setXAxisBoundsManual(true);
@@ -287,8 +288,23 @@ public class DataFragment extends Fragment {
                 NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
                 String formatPrice = numberFormat.format(cost) + "g";
 
+                int hInt = (int) dataPoint.getX();
+                Object o = history.get(hInt);
+                JSONArray ja = (JSONArray) o;
+                Date date;
+                long epoch = 0;
+                try{
+                    int eInt = (int) ja.get(0);
+                    String eString = String.valueOf(eInt);
+                    epoch = Long.parseLong(eString);
 
-                String string = formatPrice + "\n" + dataPoint.getX();
+                }catch(JSONException e){
+
+                }
+                date = new java.util.Date(epoch * 1000);
+
+
+                String string = formatPrice + "\n" + date.toString();
                 MainActivity.displaySnackbar(string, Snackbar.LENGTH_LONG);
             }
         });

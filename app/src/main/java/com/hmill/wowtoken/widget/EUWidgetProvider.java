@@ -27,17 +27,21 @@ import org.json.JSONObject;
 public class EUWidgetProvider extends AppWidgetProvider {
 
     private static final String REGION = "EU: ";
+    private static final String FULL_REGION = TokenInfo.EUROPEAN;
     private static TokenInfo Token = new TokenInfo();
+    private static RemoteViews remoteViews;
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        final int count = appWidgetIds.length;
+        queueUrl(TokenInfo.URL_WITHOUT_HISTORY, context, appWidgetManager, appWidgetIds);
+    }
 
+    public static void updateViews(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
+        final int count = appWidgetIds.length;
         for (int i = 0; i < count; i++) {
             int widgetId = appWidgetIds[i];
-            queueUrl(context, TokenInfo.URL_WITHOUT_HISTORY);
 
-            RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             String timeString = "";
             try{
                 String[] split = Token.getUpdated().split(",");
@@ -55,7 +59,7 @@ public class EUWidgetProvider extends AppWidgetProvider {
             remoteViews.setTextColor(R.id.priceView, Color.WHITE);
             remoteViews.setTextViewText(R.id.priceView, REGION + Token.getCurrentPrice());
 
-            Intent intent = new Intent(context, EUWidgetProvider.class);
+            Intent intent = new Intent(context, NAWidgetProvider.class);
             intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -64,7 +68,7 @@ public class EUWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    public static void queueUrl(Context context, String url) {
+    public static void queueUrl(String url, final Context context, final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -72,14 +76,14 @@ public class EUWidgetProvider extends AppWidgetProvider {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONObject nonFormatted = (JSONObject) response.get(TokenInfo.EUROPEAN);
+                            JSONObject nonFormatted = (JSONObject) response.get(FULL_REGION);
                             JSONObject formatted = (JSONObject) nonFormatted.get(TokenInfo.FORMATTED);
                             Token.setRegion(formatted.get(TokenInfo.REGION).toString());
                             Token.setUpdated(formatted.get(TokenInfo.UPDATED).toString());
                             Token.setLowPrice(formatted.get(TokenInfo.LOW_PRICE).toString());
                             Token.setCurrentPrice(formatted.get(TokenInfo.CURRENT_PRICE).toString());
                             Token.setHighPrice(formatted.get(TokenInfo.HIGH_PRICE).toString());
-
+                            updateViews(context, appWidgetManager, appWidgetIds);
                         } catch (JSONException e) {
                             Log.e("tag", e.toString());
                         }
@@ -96,7 +100,6 @@ public class EUWidgetProvider extends AppWidgetProvider {
         } catch (NullPointerException npe) {
 
         }
-
 
     }
 

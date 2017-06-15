@@ -2,6 +2,7 @@ package com.hmill.wowtoken.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,7 @@ public class RealmListAdapter extends ArrayAdapter<Realm> implements View.OnClic
         else
             viewHolder.statusImageView.setBackgroundResource(R.drawable.offline_icon);
         viewHolder.realmTextView.setText(realm.getName());
+        viewHolder.realmTextView.setTextColor(Color.BLACK);
         // Return the completed view to render on screen
         return convertView;
     }
