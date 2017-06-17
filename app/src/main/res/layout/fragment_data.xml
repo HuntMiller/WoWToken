@@ -144,13 +144,23 @@
                     android:padding="@dimen/filter_button_padding"/>
 
                 <Button
+                    android:id="@+id/one_month_button"
+                    android:layout_width="@dimen/filter_button_width"
+                    android:layout_height="@dimen/filter_button_height"
+                    android:text="1m"
+                    android:textColor="@color/colorBlack"
+                    android:background="@null"
+                    android:padding="@dimen/filter_button_padding"/>
+
+                <Button
                     android:id="@+id/all_button"
                     android:layout_width="@dimen/filter_button_width"
                     android:layout_height="@dimen/filter_button_height"
                     android:text="All"
                     android:textColor="@color/colorBlack"
                     android:background="@null"
-                    android:padding="@dimen/filter_button_padding"/>
+                    android:padding="@dimen/filter_button_padding"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

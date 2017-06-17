@@ -51,15 +51,16 @@ public class DataFragment extends Fragment {
 
     private static final boolean canZoomAndScale = true;
     //# data points shown
-    private static final int minX = 0;
-    private static final int oneDayMaxX = 150;
-    private static final int threeDayMaxX = 450;
-    private static final int oneWeekMaxX = 1050;
+    private static final double oneDay = 1*24*60*60;
+    private static final double threeDays = 3*24*60*60;
+    private static final double oneWeek = 7*24*60*60;
+    private static final double oneMonth = 30*24*60*60;
+    private static final double toMilliseconds = 1000;
 
     private static TextView region, lowPrice, currentPrice, highPrice, updated, apiResult;
     private static SeekBar seekBar;
     private static GraphView graph;
-    private static Button twentyFourHourButton, threeDayButton, oneWeekButton, allButton;
+    private static Button twentyFourHourButton, threeDayButton, oneWeekButton, oneMonthButton;
 
     private static TokenInfo token;
     private static String regionTitle;
@@ -105,7 +106,7 @@ public class DataFragment extends Fragment {
         twentyFourHourButton = (Button) v.findViewById(R.id.twenty_four_hour_button);
         threeDayButton = (Button) v.findViewById(R.id.three_day_button);
         oneWeekButton = (Button) v.findViewById(R.id.one_week_button);
-        allButton = (Button) v.findViewById(R.id.all_button);
+        oneMonthButton = (Button) v.findViewById(R.id.one_month_button);
 
         setupListeners();
         queueUrl(MainActivity.context, TokenInfo.URL_WITH_HISTORY);
@@ -117,8 +118,10 @@ public class DataFragment extends Fragment {
         twentyFourHourButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(minX);
-                graph.getViewport().setMaxX(oneDayMaxX);
+                Date date = new Date();
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(date.getTime());
+                graph.getViewport().setMaxX(date.getTime() + oneDay*toMilliseconds);
                 graph.getViewport().scrollToEnd();
             }
         });
@@ -126,8 +129,10 @@ public class DataFragment extends Fragment {
         threeDayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(minX);
-                graph.getViewport().setMaxX(threeDayMaxX);
+                Date date = new Date();
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(date.getTime());
+                graph.getViewport().setMaxX(date.getTime() + threeDays*toMilliseconds);
                 graph.getViewport().scrollToEnd();
             }
         });
@@ -135,20 +140,25 @@ public class DataFragment extends Fragment {
         oneWeekButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(minX);
-                graph.getViewport().setMaxX(oneWeekMaxX);
+                Date date = new Date();
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(date.getTime());
+                graph.getViewport().setMaxX(date.getTime() + oneWeek*toMilliseconds);
                 graph.getViewport().scrollToEnd();
             }
         });
 
-        allButton.setOnClickListener(new View.OnClickListener() {
+        oneMonthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                graph.getViewport().setMinX(minX);
-                graph.getViewport().setMaxX(history.size());
+                Date date = new Date();
+                graph.getViewport().setXAxisBoundsManual(true);
+                graph.getViewport().setMinX(date.getTime());
+                graph.getViewport().setMaxX(date.getTime() + oneMonth*toMilliseconds);
                 graph.getViewport().scrollToEnd();
             }
         });
+
     }
 
     private static int sanitize(String string) {
@@ -178,7 +188,7 @@ public class DataFragment extends Fragment {
                 long epoch = Long.parseLong(eString);
                 Date date = new java.util.Date(epoch * 1000);
 
-                DataPoint datapoint = new DataPoint(i, Integer.valueOf(ja.get(1).toString()));
+                DataPoint datapoint = new DataPoint(date, Integer.valueOf(ja.get(1).toString()));
                 series.appendData(datapoint, true, arrayList.size());
             } catch (JSONException e) {
 
@@ -255,7 +265,7 @@ public class DataFragment extends Fragment {
         });
         anim.start();
 
-        //seekBar.setProgress(seekPerc);
+        seekBar.setProgress(seekPerc);
         seekBar.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -271,45 +281,34 @@ public class DataFragment extends Fragment {
         graph.addSeries(series);
 
         graph.getViewport().setScalableY(canZoomAndScale);
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(MainActivity.context));
 
-
-
-        //Set zoom to show last X amount of datapoints
+        //Set zoom to show last X time worth of data
+        Date date = new Date();
         graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(minX);
-        graph.getViewport().setMaxX(oneDayMaxX);
+        graph.getViewport().setMinX(date.getTime());
+        graph.getViewport().setMaxX(date.getTime() + threeDays*toMilliseconds);
         graph.getViewport().scrollToEnd();
-
 
         series.setOnDataPointTapListener(new OnDataPointTapListener() {
             @Override
             public void onTap(Series series, DataPointInterface dataPoint) {
                 int cost = (int) dataPoint.getY();
+                long epoch = (long) dataPoint.getX();
+                Log.e(Constants.TAG, String.valueOf(epoch));
+                Date date = new Date(epoch);
                 NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
                 String formatPrice = numberFormat.format(cost) + "g";
-
-                int hInt = (int) dataPoint.getX();
-                Object o = history.get(hInt);
-                JSONArray ja = (JSONArray) o;
-                Date date;
-                long epoch = 0;
-                try{
-                    int eInt = (int) ja.get(0);
-                    String eString = String.valueOf(eInt);
-                    epoch = Long.parseLong(eString);
-
-                }catch(JSONException e){
-
-                }
-                date = new java.util.Date(epoch * 1000);
-
-
-                String string = formatPrice + "\n" + date.toString();
-                MainActivity.displaySnackbar(string, Snackbar.LENGTH_LONG);
+                SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yy hh:mma");
+                String formatDate = DATE_FORMAT.format(date);
+                String string = formatDate + "\n" + formatPrice;
+                MainActivity.displaySnackbar(string, Snackbar.LENGTH_INDEFINITE);
             }
         });
         series.setDrawDataPoints(true);
         series.setDataPointsRadius(5);
+
     }
 
 
