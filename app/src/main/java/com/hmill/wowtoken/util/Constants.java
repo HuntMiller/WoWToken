@@ -26,4 +26,6 @@ public class Constants {
     public static final String SETTINGS_TOOLBAR_TITLE = "Settings";
     public static final String TAG_SETTINGS = "settings";
     public static final int INDEX_SETTINGS = 3;
+
+    public static final String API_KEY = "u4e56mpqg3bqx3qfn4snjak47ba242j5";
 }

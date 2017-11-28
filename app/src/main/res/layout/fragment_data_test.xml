@@ -6,45 +6,39 @@
     tools:context="com.hmill.wowtoken.fragments.DataFragment">
 
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/region"
+            style="@style/Region"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:maxWidth="250dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/currentPrice"
+            style="@style/CurrentPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/black"
+            android:layout_below="@id/region"/>
+
+
         <LinearLayout
+            android:id="@+id/seekbarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/region"
-                style="@style/Region"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:maxWidth="250dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="@android:color/black" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/data_fragment_space_height"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/currentPrice"
-                style="@style/CurrentPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:textColor="@android:color/black" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/data_fragment_space_height_small"
-                android:layout_weight="1" />
+            android:orientation="vertical"
+            android:layout_below="@+id/currentPrice">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -89,78 +83,82 @@
                 android:layout_height="@dimen/data_fragment_space_height"
                 android:layout_weight="1" />
 
-            <com.jjoe64.graphview.GraphView
-                android:id="@+id/graph"
-                android:layout_width="match_parent"
-                android:layout_height="200dip"
-                android:layout_weight="1"
-                app:seriesColor="@color/colorBlack"
-                app:seriesType="line" />
-
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/data_fragment_space_height_small"
                 android:layout_weight="1" />
 
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="left">
+                android:gravity="left"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/textView16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Filter: "
-                    android:textColor="@color/colorBlack"/>
+                    android:textColor="@color/colorBlack" />
 
                 <Button
                     android:id="@+id/twenty_four_hour_button"
                     android:layout_width="@dimen/filter_button_width"
                     android:layout_height="@dimen/filter_button_height"
-                    android:text="24h"
-                    android:textColor="@color/colorBlack"
                     android:background="@null"
                     android:padding="@dimen/filter_button_padding"
-                    android:shadowColor="@color/colorAllianceTrim"/>
+                    android:shadowColor="@color/colorAllianceTrim"
+                    android:text="24h"
+                    android:textColor="@color/colorBlack" />
 
                 <Button
                     android:id="@+id/three_day_button"
                     android:layout_width="@dimen/filter_button_width"
                     android:layout_height="@dimen/filter_button_height"
-                    android:text="3d"
-                    android:textColor="@color/colorBlack"
                     android:background="@null"
-                    android:padding="@dimen/filter_button_padding"/>
+                    android:padding="@dimen/filter_button_padding"
+                    android:text="3d"
+                    android:textColor="@color/colorBlack" />
 
                 <Button
                     android:id="@+id/one_week_button"
                     android:layout_width="@dimen/filter_button_width"
                     android:layout_height="@dimen/filter_button_height"
-                    android:text="1w"
-                    android:textColor="@color/colorBlack"
                     android:background="@null"
-                    android:padding="@dimen/filter_button_padding"/>
+                    android:padding="@dimen/filter_button_padding"
+                    android:text="1w"
+                    android:textColor="@color/colorBlack" />
 
                 <Button
                     android:id="@+id/one_month_button"
                     android:layout_width="@dimen/filter_button_width"
                     android:layout_height="@dimen/filter_button_height"
-                    android:text="1m"
-                    android:textColor="@color/colorBlack"
                     android:background="@null"
-                    android:padding="@dimen/filter_button_padding"/>
+                    android:padding="@dimen/filter_button_padding"
+                    android:text="1m"
+                    android:textColor="@color/colorBlack" />
 
                 <Button
                     android:id="@+id/all_button"
                     android:layout_width="@dimen/filter_button_width"
                     android:layout_height="@dimen/filter_button_height"
-                    android:text="All"
-                    android:textColor="@color/colorBlack"
                     android:background="@null"
                     android:padding="@dimen/filter_button_padding"
-                    android:visibility="gone"/>
+                    android:text="All"
+                    android:textColor="@color/colorBlack"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -187,7 +185,17 @@
                 android:gravity="center_horizontal"
                 android:textColor="@android:color/black" />
 
-
         </LinearLayout>
-    </ScrollView>
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="200dip"
+            android:layout_above="@id/bottomLayout"
+            android:layout_below="@id/seekbarLayout"
+            android:layout_weight="1"
+            app:seriesColor="@color/colorBlack"
+            app:seriesType="line" />
+    </RelativeLayout>
+
 </FrameLayout>

@@ -36,6 +36,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import static com.hmill.wowtoken.util.Constants.API_KEY;
+
 public class RealmsFragment extends Fragment {
 
     private String mParam1;
@@ -80,7 +82,7 @@ public class RealmsFragment extends Fragment {
     }
 
     public static void getRealmStatus() {
-        final String ALL_EN_US_REALMS = "https://us.api.battle.net/wow/realm/status?locale=en_US&apikey=g42yjbzr44um5djjhs2nswdzj2jmkqmx";
+        final String ALL_EN_US_REALMS = "https://us.api.battle.net/wow/realm/status?locale=en_US&apikey=" + Constants.API_KEY;
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, ALL_EN_US_REALMS, null, new Response.Listener<JSONObject>() {
 

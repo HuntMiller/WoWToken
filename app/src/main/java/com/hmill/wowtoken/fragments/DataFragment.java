@@ -313,6 +313,7 @@ public class DataFragment extends Fragment {
 
 
     public static void queueUrl(final Context c, String url) {
+        //TODO update request to request straight from blizzard api
         Log.d(Constants.TAG, "called queueUrl()");
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
